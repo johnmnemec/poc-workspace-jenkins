@@ -1,0 +1,69 @@
+FOR Ref Only- GH Actions the yaml must be undee root  see .github for lates (oct 2024)
+name: Demo-DBB_Build_on_ZOS_With_GitHub_Actions 
+## Notes:
+#  Runner install: https://docs.github.com/en/actions/hosting-your-own-runners/adding-self-hosted-runners
+#  Runner PreReq:  Git, pre-gen'd SSH keys to zOS, network access to zOS,and known_host updated for GH
+#  zOS PreReq:     Installed DBB and Git. SSH security and network access to clone the repo 
+#  CI pipeline:    Use the simple workflow option to design a new actions yaml file like below
+#  DBB Run Mode:   "-impactBuild" (normal mode), "-reset" (clears DBB Meta), "-scanOnly -fullBuild" (baseline)
+#  Runner Vars:    add this step to a job to see the env vars "- run: gci env:* | sort-object name"
+## 
+#  chglog: 
+#   - njl Jan 2022:  added zDT support 
+
+# Global vars
+env:
+    # a var with a valid SSH acct on Z. With pre-gen'd and tested keys in the runner. 
+    # my real zOS harware 
+    #DBB_Host:  'ssh nlopez@tvt6031.svl.ibm.com'
+    DBB_Host:  'ssh nlopez@zos.dev'
+    
+    # scripts on z/OS (SSH user's Home Dir in Unix - USS) 
+    Clone:      'All-pipeline-scripts/AzRocketGit-init.sh'
+    DBB_Build:  'All-pipeline-scripts/AzDBB-build.sh'
+    Publish:    'All-pipeline-scripts/AzPublishUCD.sh'
+    
+        
+    
+# "on" trigger to  manually start this workflow. Can add "pull, push..." for auto trigger.   
+# see https://docs.github.com/en/actions/learn-github-actions/contexts
+on: [workflow_dispatch,  push]
+
+jobs:    
+    DBB_Build_on_zOS:        
+        runs-on: self-hosted
+        env:
+            # Project related vars 
+            MyRepo:      git@github.com:${{ github.repository }}.git
+            MyCommon:      git@github.com:${{ github.repository }}.git
+            MyWorkDir:   tmp/ghActions/ghAction-poc-workspace_run_${{ github.run_number }}
+            MyWorkSpace: ghAction-poc-workspace    
+            MyBranch:    ${{ github.ref }}
+                                 
+        steps:
+            #- name: Diags             
+            #  env:
+            #    GITHUB_CONTEXT: ${{ toJSON(github) }}
+            #  run: echo "$GITHUB_CONTEXT"
+                      
+            - name: Clone_Main_Repo  
+              run: ${{ env.DBB_Host  }} ${{ env.Clone }}  ${{ env.MyRepo }}   ${{ env.MyWorkDir }}  ${{ env.MyWorkSpace }}  ${{ env.MyBranch }}
+             
+            - name: Clone_Common_Repo  
+              run: ${{ env.DBB_Host  }} ${{ env.Clone }}  ${{ env.MyRepo }}   ${{ env.MyWorkDir }}  ${{ env.MyWorkSpace }}  ${{ env.MyBranch }}
+
+            - name: DBB_Impact_Build
+              run: ${{ env.DBB_Host  }} ${{ env.DBB_Build }}   ${{ env.MyWorkDir }}  ${{ env.MyWorkSpace }}  ghAction-poc-app --impactBuild
+             
+    Test_on_zOS:    
+        runs-on: self-hosted
+        needs: DBB_Build_on_zOS
+        steps:
+            - name: Run_DATDEMO-pgm               
+              run: |
+                   $Env:jcl="'DAT.DEV.JCL(DATDEMO3)'"
+                   ${{ env.DBB_Host  }} tsocmd delete  "\'dat.dev.test.result\'"   
+                   ${{ env.DBB_Host  }} tsocmd submit "\'$env:jcl\'"  
+                   sleep 10    
+                   ${{ env.DBB_Host  }} cat  "//\'dat.dev.test.result\'"
+             

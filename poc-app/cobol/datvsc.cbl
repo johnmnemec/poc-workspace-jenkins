@@ -1,0 +1,11 @@
+       ID DIVISION.
+       PROGRAM-ID. DATVSC.
+      *
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       COPY DATDEPND.
+       PROCEDURE DIVISION.
+           DISPLAY 'DATVSC here- v4b IJ'.
+           DISPLAY 'CPYBK=DATDEPND -> ' WS-VER.
+           STOP RUN.

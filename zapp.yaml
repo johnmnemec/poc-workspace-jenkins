@@ -1,0 +1,42 @@
+name: poc-app-zapp
+description: | 
+  This is a sample IBM Z Open Editor zapp.yaml for DBB User Builds. It defines the path of the DBB build scripts
+  and a developers personal PDS HLQ's for building and testing a feature. 
+  ver5:  Need to mkdir thew worksapce and run a full upload to init app-conf
+version: 3.0.0
+author:
+  name: ANY_NAME
+
+profiles:
+  - name: dbb-userbuild
+    type: dbb
+    settings:
+      # chg the workspace to the root of the local application repo
+      application: poc-workspace
+      
+      #command: "sh . ~/.profile;ls -lsaT $DBB_HOME/groovy/bin; groovy --version ; cat $DBB_HOME/bin/groovyz; $DBB_HOME/bin/groovyz"
+      command: "export DBBVER=S2; . /etc/profile; $DBB_HOME/bin/groovyz  -DBB_DAEMON_HOST 127.0.0.1 -DBB_DAEMON_PORT 8180"
+      buildScriptPath: "/u/ibmuser/dbb-zappbuild/build.groovy"
+      buildScriptArgs:
+        - "--userBuild  "
+        - "--workspace ${zopeneditor.userbuild.userSettings.dbbWorkspace}/${application}"
+        - "--application poc-app"
+        - "--hlq  ${zopeneditor.userbuild.userSettings.dbbHlq}"
+        - "--outDir  ${zopeneditor.userbuild.userSettings.dbbLogDir}"
+      additionalDependencies:
+        - "**/application-conf"
+        - "zapp*"
+
+
+      logFilePatterns:
+        - "${buildFile.basename}.log"
+        - "BuildReport.*"
+
+propertyGroups:
+  - name: cobol-copybooks
+    language: cobol
+    libraries:
+      - name: syslib
+        type: local
+        locations:
+          - "**"

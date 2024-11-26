@@ -1,0 +1,106 @@
+# Starter pipeline - IBM DAT Demo Simple model - ver 2.0  run off new waas Init-POC.Bat scripts see waas-iac
+# See Notes below
+
+
+## Define the pipeline triggers
+# - A commit event on the develop branch triggers a DBB impact build, buztool publish to artifactory and a UCD deploy to a default Dev env for SIT. 
+# - WIP A new event TAG triggers a DBB Release Build for the Sprint/Epic. A Release build is ... 
+##
+trigger:
+  branches:
+    include: 
+      - develop
+  tags:
+    include: 
+      - '*'
+     
+
+## Define Global settings 
+
+# The agent for this pipeline (WaaS IBM Cloud Instance)
+pool:
+  name: waaS_agent_pool
+
+#
+variables: # Uses the Library/group variables for the project 
+  - group: MyVariables
+  
+#
+##
+
+
+# Define the Jobs Steps 
+#  
+jobs:
+- job: DBB_Artifactory_UCD 
+  steps:          
+  - checkout: none
+  - task: SSH@0
+    inputs:
+      sshEndpoint:  "Wazi_aaS on IBM Cloud" 
+      runOptions:   "commands"
+      commands:     "$(zScriptsHome)/CI/Clone.sh $(myWorkDir) $(myWorkSpace) $(MyRepo_pubGH) $(Build.SourceBranch)"      
+    displayName:    "Clone App src repo" 
+
+  - task: SSH@0
+    inputs:
+      sshEndpoint:  "Wazi_aaS on IBM Cloud"
+      runOptions:   "commands"
+      commands:     "$(zScriptsHome)/CI/Clone.sh $(MyWorkDir) $(MyWorkSpace) $(MyRepoCommon_pubGH) main  $(MyApp)"
+    displayName:    "Clone Shared repo" 
+
+  - task: SSH@0
+    inputs:
+      sshEndpoint:  "Wazi_aaS on IBM Cloud"
+      runOptions:   "commands"
+      commands:     "$(zScriptsHome)/CI/Build.sh   $(MyWorkDir)    $(MyWorkSpace)     $(MyApp)   --impactBuild "
+    displayName:    "DBB Impact Build" 
+
+  - task: SSH@0
+    inputs:
+      sshEndpoint:  "Wazi_aaS on IBM Cloud"
+      runOptions:   "commands"
+      # Jfrog broke on 5/20/24 use CodeStation (chg ucd/app/comp-auto-launch)
+      ##displayName:    "Publish/Deploy with Jfrog Artifactory" 
+      
+      ## commands:     "$(zScriptsHome)/CD/UCD_Pub.sh $(Build.buildid) poc-component  $(MyWorkDir)/$(MyWorkSpace)  jFrog "
+      commands:     "$(zScriptsHome)/CD/UCD_Pub.sh $(Build.buildid) poc-component  $(MyWorkDir)/$(MyWorkSpace)"
+    
+    displayName:    "Publish/Deploy with UCD" 
+
+      # WIP Leave arg 4 null to default to codeStation Mode 
+      # Dont used not test- may need ucd component rework when pull art's 
+      #commands:     "$(zScriptsHome)/CD/UCD_Pub.sh $(Build.buildid) poc-component  $(MyWorkDir)/$(MyWorkSpace)  "
+    #displayName:    "Publish/Deploy CodeStation/UCD" 
+
+
+
+#continueOnError: false
+
+####
+# Ref Guides:
+#   IBM DAT ref model:  https://ibm.github.io/z-devops-acceleration-program/  
+#   yaml syntax:        https://aka.ms/yaml
+#   more yaml syntax:   https://medium.com/@Lijitha/azure-pipeline-yaml-with-example-5a93697a1d0e
+#   Demo App:           https://dev.azure.com/Azure-Repo-DBB/DBB_Artifactory_UCD_Demo/_build   use (Nel1@ibm)
+#   
+
+# Dev Notes on this configuration:
+#    - YAML vs classic pipe has many benefits: bypass agent git checkout, auto start the pipeline from a commit   
+#    - The UCD_Pub.sh step can now run codeStation or Art'y  
+#    - I have 2 pipes. AzDBB the  standard demo which can run codeStation or Art'y mode and is now a yaml pipe
+#      not the old classic one in the AzDBB Project. And DBB_Artifactory_UCD_Demo for testing old az Feeds - dont use. 
+
+# Config:    
+#    - ADO AzDBB Pipe: The standard demo using this YAML file 
+#        https://dev.azure.com/Azure-Repo-DBB/AzDBB/_build?definitionId=6&_a=summary
+#
+#    - GitHub demo App Repo (pGH nlopez1-ibm/default)
+#       https://github.com/nlopez1-ibm/poc-workspace 
+#
+#    - Artifactory Dir (nel1@ibm TaaS): 
+#        https://eu.artifactory.swg-devops.com/ui/repos/tree/General/sys-dat-team-generic-local/Azure
+#
+#    - myUCD Sever.  App Component Versions (admin/admin):
+#       http://myucd:8080/#component/183ec56f-29b3-96a2-53cb-012c1559f338/versions
+##

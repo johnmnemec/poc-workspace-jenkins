@@ -1,0 +1,115 @@
+name: Demo-DBB_WaziDeploy_Artifactory 
+  ##
+  # This is a working sample zOS DevOps workflow. Update it to match your configuration (v5)
+    # Sample Config:
+    #  Stack:   DBB v2, dbb-zappbuild latest, wazi-deploy(wd) latest (in python mode), Rocket git latest, Artifactory latest
+    #  Repo:    my_pGH/poc-workspace
+    #  Runner:  Self-hosted on JES@SRVR VM running as a Windows service with network access to JFROG and SSH keys to zOS_Host.  
+    #  Scripts: Installed on zOS User's $HOME/dbb-zappbuild  (distribution source zDevOps/scripts)  
+    ## 
+    # ghActions yaml help: https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions
+    ##
+    # todo: 
+    #  - When a steps fails, stop the workflow 
+    #  - where to store the wd envfile when running on other lpars?
+    ##
+
+env:    
+  # Global vars   
+  zOS_Host:     'ssh IBMUSER@poc-waas '                           # ssh cmd to zOS from runner with racf user IBMUSER and omvs [home='/u/ibmuser' shell='sh']
+  zOS_Env:      'export DBBVER=S2; . /etc/profile; '              # Environment vars for this zHost. ref: https://www.ibm.com/docs/en/developer-for-zos/16.0?topic=translators-python-deployment-command#wd_run_python__requirements 
+  
+  buildID:      ${{ github.run_number }}                          # Used for versioning  
+  
+  # App related variables
+  MyRepo:       git@github.com:${{github.repository}}.git         # Source code repository URL (SSH)
+  MyBranch:     ${{ github.ref }}                                 # Branch on which to run the GHA pipeline      
+  MyWorkSpace:  'poc-workspace'                                   # Git Repo Root Dir 
+  MyApp:        'poc-app'                 
+
+  # workDirs
+  ciWorkDir:  '/tmp/wazi-deploy/poc-app/${{github.run_number}}_Build'   # build working dir relative to $HOME
+  cdWorkDir:  '/tmp/wazi-deploy/poc-app/${{github.run_number}}_Release' # build working dir relative to $HOME
+  
+
+on: workflow_dispatch
+  # "on" trigger manually starts this workflow. Can add "pull, push..." for auto trigger.
+  # ref: https://docs.github.com/en/actions/learn-github-actions/contexts
+
+jobs:
+  Build_Job:  
+    runs-on: self-hosted   
+    timeout-minutes: 5   
+
+    env:
+      # build scripts  
+      Clone:      'dbb-zappbuild/scripts/ci/clone.sh'                     # script to clone ths applications repo on zOS 
+      DBB_Build:  'dbb-zappbuild/scripts/ci/build.sh'                     # dbb_zappbuild Build script   
+      WD_Package: 'dbb-zappbuild/scripts/ci/wazi-deploy/wd-package/package.sh'    # prepare the DBB artifacts, pack and publish to Artifactory  
+      
+    steps:
+      - name: Init work dir and check disk space utilization                 
+        run: ${{ env.zOS_Host }} "mkdir -p  ${{ env.ciWorkDir }}; df -P /tmp "
+            
+      - name: Git clone app source 
+        run: ${{ env.zOS_Host }} "${{ env.zOS_Env }} ${{ env.Clone }} ${{ env.ciWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyRepo }} ${{ env.MyBranch }} ${{ env.MyApp }}"
+      
+      - name: DBB build app changes(impact) into PDSs $USER.PIPELINE.*
+        # Impact build 
+        # run: ${{ env.zOS_Host }} "${{ env.zOS_Env }} ${{ env.DBB_Build }} ${{ env.ciWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApp }} --impactBuild"      
+        # TEST Build one pgm  
+        run: ${{ env.zOS_Host }} "${{ env.zOS_Env }} ${{ env.DBB_Build }} ${{ env.ciWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApp }} poc-app/cobol/datbatch.cbl"
+       
+       
+      - name: Save DBB build logs and html rpt        
+        run: "scp poc-waas:${{env.ciWorkDir}}/${{env.MyWorkSpace}}/*.log ."              
+
+      - name: Save DBB build logs and html rpt
+        run: "scp poc-waas:${{env.ciWorkDir}}/${{env.MyWorkSpace}}/*.html ."              
+
+      - name: Upload DBB logs to this workflow Summary page
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: .
+          
+        
+      - name: WaziDeploy- Prepare, version, package and publish to Artifactory          
+        run: ${{ env.zOS_Host }} "${{ env.zOS_Env }} ${{ env.WD_Package }} ${{ env.ciWorkDir}}/${{env.MyWorkSpace}} ${{ env.MyApp }} ${{ env.buildID }}"
+
+     
+      
+  Deploy_Job:
+    runs-on: self-hosted   
+    timeout-minutes: 5   
+    needs: Build_Job
+
+    env:
+      target_zOS: 'dbb-zappbuild/wazi-deploy-conf/wazi-deploy/poc-waas.env'   # Wazi DEPLOY target zOS host environment properties 
+      
+      # deploy scripts      
+      WD_Deploy:  'dbb-zappbuild/scripts/cd/wazi-deploy/gh-deploy.sh'         # Generate a plan, download artifacts and deploy to target
+     
+
+    steps:
+      - name: Init work dirs  and check disk space utilization                 
+        run: ${{ env.zOS_Host }} "mkdir -p  ${{ env.cdWorkDir }};  df -P /tmp "          
+      
+
+      - name: WaziDeploy- Generate deployPlan, download artifacts and deploy to a target zOS environment  
+        run: ${{ env.zOS_Host }} "${{ env.zOS_Env }} ${{ env.WD_Deploy }} ${{ env.cdWorkDir }} ${{ env.target_zOS }}  ${{env.ciWorkDir}}/${{env.MyWorkSpace}}/wazideploy_manifest.yml"
+
+
+# defer - save log steps 
+    # save the dbb output in the gitHub Action Summary page 
+      # todo, work on encoding of logs for viewing off zOS
+      ##- name: Save DBB build logs and html rpt
+      ##  run: "scp poc-waas: ${{ env.ciWorkDir}}/${{env.MyWorkSpace }}/*.log ."              
+      ##- name: Save DBB build logs and html rpt
+      ##  run: "scp poc-waas: ${{ env.ciWorkDir}}/${{env.MyWorkSpace }}/*.html ."              
+      ##- name: Upload DBB logs to this workflow Summary page
+      ##  uses: actions/upload-artifact@v3
+      ##  with:
+      ##    name: build-artifacts
+      ##    path: .
+              

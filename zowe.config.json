@@ -1,0 +1,83 @@
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "tso": {
+            "type": "tso",
+            "properties": {
+                "account": "",
+                "codePage": "1047",
+                "logonProcedure": "IZUFPROC"
+            },
+            "secure": []
+        },
+        "base": {
+            "type": "base",
+            "properties": {
+                "host": "",
+                "rejectUnauthorized": true
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        },
+        "poc-waas-zosmf": {
+            "type": "zosmf",
+            "properties": {
+                "port": 10443,
+                "protocol": "https",
+                "rejectUnauthorized": false,
+                "host": "poc-waas"
+            },
+            "secure": []
+        },
+        "ssh": {
+            "type": "ssh",
+            "properties": {
+                "port": 22,
+                "privateKey": "C:/Users/nelso/.ssh/id_rsa",
+                "host": "poc-waas"
+            },
+            "secure": [
+                "user"
+            ]
+        },
+        "zOpenDebug": {
+            "type": "zOpenDebug",
+            "properties": {
+                "dpsPort": 8192,
+                "dpsContextRoot": "api/v1",
+                "dpsSecured": false,
+                "rdsPort": 8194,
+                "rdsSecured": false,
+                "uuid": "c0f4aefb-9e73-4fd2-b255-76c308370a4f"
+            },
+            "secure": [
+                "user",
+                "password",
+                "token"
+            ]
+        },
+        "project_base": {
+            "type": "base",
+            "properties": {
+                "host": "poc-waas",
+                "rejectUnauthorized": false
+            },
+            "secure": [
+                "user",
+                "password",
+                "token"
+            ]
+        }
+    },
+    "defaults": {
+        "zosmf": "zosmf",
+        "tso": "tso",
+        "ssh": "ssh",
+        "rse": "rse",
+        "zOpenDebug": "zOpenDebug",
+        "base": "project_base"
+    },
+    "autoStore": true
+}

@@ -1,1 +1,1 @@
-# poc-workspace-public
+simple poc app for demos in jenkins 

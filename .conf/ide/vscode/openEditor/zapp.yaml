@@ -1,0 +1,55 @@
+name: poc-app-zapp
+description: Nelson example IBM Z Open Editor 3.0.0 zapp.yaml 
+version: 3.0.0
+author:
+  name: Nelson Lopez
+
+profiles:
+  - name: dbb-userbuild
+    type: dbb
+    settings:
+      application: poc-workspace
+      
+      #command: "sh . ~/.profile;ls -lsaT $DBB_HOME/groovy/bin; groovy --version ; cat $DBB_HOME/bin/groovyz; $DBB_HOME/bin/groovyz"
+      command: "$DBB_HOME/bin/groovyz"
+      buildScriptPath: "$DBB_HOME/dbb-zappbuild/build.groovy"
+      buildScriptArgs:
+        - "--userBuild"
+        - "--workspace ${zopeneditor.userbuild.userSettings.dbbWorkspace}/${application}"
+        - "--application poc-app"
+        - "--hlq  ${zopeneditor.userbuild.userSettings.dbbHlq}"
+        - "--outDir  ${zopeneditor.userbuild.userSettings.dbbLogDir}"
+      additionalDependencies:
+        - "**/application-conf"
+        - "zapp*"
+
+      logFilePatterns:
+        - "${buildFile.basename}.log"
+        - "BuildReport.*"
+
+propertyGroups:
+  - name: cobol-copybooks
+    language: cobol
+    libraries:
+      - name: syslib
+        type: local
+        locations:
+          - "**/copybook"
+      - name: syslib
+        type: mvs
+        locations:
+          - "IBMUSER.IDZ.COBCOPY"
+      - name: MYLIB
+        type: mvs
+        locations:
+          - IBMUSER.IDZ.COPYLIB
+
+# pl/i include libs 
+  - name: pl1-includes
+    language: pl1
+    compilerOptions: "not(!),margins(2,100)"
+    libraries:
+      - name: syslib
+        type: local
+        locations:
+          - "**/plinc"             
