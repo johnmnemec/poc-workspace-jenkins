@@ -90,7 +90,7 @@
               
             "zopeneditor.userbuild.userSettings": {
               "dbbWorkspace": "/u/ibmuser/vscode",
-              "dbbLogDir": "/u/ibmuser/vscode/",
+              "dbbLogDir": "/u/ibmuser/vscode",
               "dbbHlq": "IBMUSER.VSCODE"          
             },
       
