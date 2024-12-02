@@ -4,7 +4,7 @@
 // change these values to match your configuration
 // sample scripts are @ '/u/ibmuser/waziDBB/dbb-v2/dbb-zappbuild/scripts'
 
-def myAgent  = 'poc-waas=agent'
+def myAgent  = 'poc-waas-agent'
 def repo = 'git@github.com:nlopez1-ibm/poc-workspace-public.git'
 
 
