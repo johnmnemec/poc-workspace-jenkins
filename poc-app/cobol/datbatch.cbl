@@ -1,5 +1,5 @@
        ID DIVISION.
-      * model adov1 active 
+      * steplib IBMUSER.JENKINS.LOAD 
        PROGRAM-ID. DATBATCH.
        ENVIRONMENT DIVISION.
        DATA DIVISION.
@@ -14,13 +14,4 @@
            DISPLAY 'DATDEPND.CPY: WS-VER    =' WS-VER. 
            DISPLAY 'DATEMBED.CPY: EMBED-VER =' EMBED-VER.
 
-           PERFORM VARYING num1 FROM 0 BY 1 UNTIL num1 > num2
-                IF num1 > 2  THEN
-                    perform show_num1
-                END-IF
-           END-PERFORM.
-           STOP RUN.
-      *
-       show_num1.
-           display 'LOOPING: The Value of num1=' num1.
-         
+           
