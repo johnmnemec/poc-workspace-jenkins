@@ -1,0 +1,121 @@
+{
+            "json.schemas": [
+              {
+                "fileMatch": [
+                  "/zapp.json"
+                ],
+                "url": "file:///c%3A/Users/nelso/.vscode/extensions/ibm.zopeneditor-5.0.0/resources/zapp-schema-1.3.0.json"
+              },
+              {
+                "fileMatch": [
+                  "/zcodeformat.json"
+                ],
+                "url": "file:///c%3A/Users/nelso/.vscode/extensions/ibm.zopeneditor-5.0.0/resources/zcodeformat-schema-0.0.1.json"
+              }
+            ],
+            
+            "zopeneditor.welcomePage.show": false,
+            "terminal.integrated.defaultProfile.windows": "Command Prompt",
+            "security.workspace.trust.untrustedFiles": "open",
+            "git.enableSmartCommit": true,
+            "git.confirmSync": false,    
+            "zopeneditor.logger": "DEBUG",
+        
+                 
+            "zopeneditor.cobol.includeFileExtensions": [
+                ".cpy",
+                ".copybook",
+                ".copy",
+                ".cobcopy",
+                ".mac"
+              ],
+        
+            "zopeneditor.zowe": {
+            "defaultCliProfile": "poc-waas-zosmf",
+            "defaultSshCliProfile": "ssh"
+          },    
+        
+            "zopeneditor.cobol.tabstops": [
+              0,
+              7,
+              72
+            ],
+        
+            "zopeneditor.cobol.sequenceNumbers": "column-73",
+            "zopeneditor.userbuild.enabled": true,
+            "zopeneditor.rexx.maximumLineLength": 120,
+            "yaml.schemas": {
+              "file:///c%3A/Users/nelso/.vscode/extensions/ibm.zopeneditor-5.0.0/resources/zapp-schema-1.3.0.json": [
+                "zapp.yaml"
+              ],
+              "file:///c%3A/Users/nelso/.vscode/extensions/ibm.zopeneditor-5.0.0/resources/zcodeformat-schema-0.0.1.json": [
+                "zcodeformat.yaml"
+              ]
+            },
+            "redhat.telemetry.enabled": false,
+        
+                
+              "cSpell.userWords": [
+                "CICSTS",
+                "cntl",
+                "DFDSS",
+                "genapp",
+                "IBMUSER",
+                "loadlibs",
+                "mywazi",
+                "SDLC",
+                "Wazi",
+                "zappbuild",
+                "zowe"
+              ],
+              "explorer.confirmDelete": false,
+              "zowe.settings.version": 2,
+              "zowe.logger": "TRACE",
+              "gitlens.graph.minimap.enabled": false,
+              "gitlens.ai.experimental.provider": "openai",
+              "gitlens.ai.experimental.openai.model": "gpt-4-1106-preview",
+              "window.zoomLevel": -1,
+              "explorer.confirmDragAndDrop": false,
+              "[shellscript]": {
+                "files.eol": "\n"
+              },
+              "editor.minimap.enabled": false,
+              "workbench.startupEditor": "none",
+              "git.openRepositoryInParentFolders": "always",
+              "zowe.ds.templates": [],
+              "db2forzosdeveloperextension.db2sqlservice.dependencies": "C:/Users/nelso/git/zdevops/conf/DB2z/db2jcc_license_cisuz.jar"
+              
+
+
+              
+            "zopeneditor.userbuild.userSettings": {
+              "dbbWorkspace": "/u/ibmuser/vscode",
+              "dbbLogDir": "/u/ibmuser/vscode/",
+              "dbbHlq": "IBMUSER.VSCODE"          
+            },
+      
+            // "dbbLogDir": "/u/nlopez/tmp/vsCode_workspace/logs" 
+      
+
+
+  },
+
+  "launch": {
+    "configurations": [
+    {
+      "type": "zOpenDebug",
+      "request": "attach",
+      "name": "List parked IBM Z Open Debug sessions",
+      "secure": true,
+      "ignoreCertificateErrors": true,
+      "useConnectionDetailsFromSettings": true
+    }
+    "applicationLaunch:" {
+        "commandLine": "ssh poc-waas submit datbatch.jcl"
+    }
+    ]
+  
+
+		
+		
+			 

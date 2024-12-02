@@ -15,7 +15,7 @@ profiles:
       application: poc-workspace
       
       #command: "sh . ~/.profile;ls -lsaT $DBB_HOME/groovy/bin; groovy --version ; cat $DBB_HOME/bin/groovyz; $DBB_HOME/bin/groovyz"
-      command: "export DBBVER=S2; . /etc/profile; $DBB_HOME/bin/groovyz  -DBB_DAEMON_HOST 127.0.0.1 -DBB_DAEMON_PORT 8180"
+      command: "/etc/profile; $DBB_HOME/bin/groovyz  -DBB_DAEMON_HOST 127.0.0.1 -DBB_DAEMON_PORT 8180"
       buildScriptPath: "/u/ibmuser/dbb-zappbuild/build.groovy"
       buildScriptArgs:
         - "--userBuild  "
@@ -29,8 +29,7 @@ profiles:
 
 
       logFilePatterns:
-        - "${buildFile.basename}.log"
-        - "BuildReport.*"
+        - "${buildFile.basename}.log"        
 
 propertyGroups:
   - name: cobol-copybooks
