@@ -44,7 +44,7 @@ pipeline {
                 script {
 
                     // example to build one program for quick testing is now supported by UCD (skip impact for now)
-                    sh 'dbb build file   poc-app/cobol/datbatch.cbl --hlq ibmuser.jenkins --dbid IBMUSER --dbpf p2Shc7n9y+4IVfiFfz6MtA=='                                        
+                    sh '. ./.profile; dbb build file   poc-app/cobol/datbatch.cbl --hlq ibmuser.jenkins --dbid IBMUSER --dbpf p2Shc7n9y+4IVfiFfz6MtA=='                                        
                      
                     // Normal pipeline Mode  impact 
                     //sh 'groovyz ' + dbbbuild + ' -w ${WORKSPACE}/'+appworkspace  + ' -a ' + appname + ' -o ${WORKSPACE}/'+appworkspace + ' -l UTF-8   -h ' + env.USER+'.JENKINS' + ' --impactBuild'
