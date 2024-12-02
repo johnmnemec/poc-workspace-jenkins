@@ -5,7 +5,10 @@
 // sample scripts are @ '/u/ibmuser/waziDBB/dbb-v2/dbb-zappbuild/scripts'
 
 def myAgent  = 'poc-waas-agent'
-def repo = 'git@github.com:nlopez1-ibm/poc-workspace-public.git'
+// def repo = 'git@github.com:nlopez1-ibm/poc-workspace-public.git'
+
+// using public repo no credentials needed 
+def repo = 'https://github.com/nlopez59/poc-workspace-public.git'
 
 
 def dbbbuild ='/u/ibmuser/dbb-zappbuild/build.groovy'
