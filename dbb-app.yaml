@@ -1,0 +1,34 @@
+---
+###
+# NJL - v2
+# Notes: this file defines the 2 basic steps to compile and link a cobol program
+# Dependency path and compile/linked options globally define in central zdevops/conf/build/Cobol.yaml
+# ...
+version: 1.0.0
+application:
+  name: poc-app      # sets the APPLICATION context var used in dependancypath and collection name  
+
+  tasks:
+    - task: Cobol
+      variables:
+     
+      # A dev can override values is not restricted by admin 
+      # Add TEST For Demo USE CASE
+      - name: compileParms
+        value: LINECOUNT(50),LIST,TEST
+
+      # When this var is defined it past the compiler 'test' option 
+      - name: debug      
+
+    - task: ImpactAnalysis
+      variables:
+        - name: impactQueryPatterns
+          value:
+            - languageExt: cbl      
+              dependencyPatterns: 
+                - "**.cpy"
+                - "**.bms"
+                - "**.cbl"
+            - languageExt: lnk                    
+              dependencyPatterns: 
+                - "**.cbl"      
