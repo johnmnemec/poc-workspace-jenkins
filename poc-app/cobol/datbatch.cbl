@@ -10,7 +10,7 @@
        COPY DATDEPND.
       *
        PROCEDURE DIVISION.
-           DISPLAY 'DATBATCH.CBL: Jenkv1.'  
+           DISPLAY 'DATBATCH.CBL: Jenkv2.'  
            DISPLAY 'DATDEPND.CPY: WS-VER    =' WS-VER. 
            DISPLAY 'DATEMBED.CPY: EMBED-VER =' EMBED-VER.
 
