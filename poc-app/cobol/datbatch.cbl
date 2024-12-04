@@ -1,5 +1,6 @@
        ID DIVISION.
-      * steplib IBMUSER.JENKINS.LOAD 
+      * steplib IBMUSER.JENKINS.LOAD  for pipeline 
+      * steplib IBMUSER.VSCODE.LOAD  for vsCode Build 
        PROGRAM-ID. DATBATCH.
        ENVIRONMENT DIVISION.
        DATA DIVISION.
@@ -10,7 +11,7 @@
        COPY DATDEPND.
       *
        PROCEDURE DIVISION.
-           DISPLAY 'DATBATCH.CBL: Jenkv2.'  
+           DISPLAY 'DATBATCH.CBL: Jenkv3.'  
            DISPLAY 'DATDEPND.CPY: WS-VER    =' WS-VER. 
            DISPLAY 'DATEMBED.CPY: EMBED-VER =' EMBED-VER.
 
