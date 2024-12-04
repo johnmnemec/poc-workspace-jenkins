@@ -56,16 +56,16 @@ pipeline {
             }
         }
 
-        stage('Stage for Deploy') {
-            steps {
-                println  '** Package and Publish to UCDs CodeStation...'                  
-                script {
+        //stage('Stage for Deploy') {
+        //    steps {
+        //        println  '** Package and Publish to UCDs CodeStation...'                  
+        //        script {
                     // sh 'groovyz ' + ucdPublish + ' --buztool ' + buzTool  + ' --workDir ${WORKSPACE}/'+appworkspace + ' --component ' + ucdComponent + ' --versionName ${BUILD_NUMBER}'
                     // sh  ucdPublish + ' Jenkins_Build_${BUILD_NUMBER} ' + ucdComponent + ' ${WORKSPACE}/'+appworkspace  
                     // sh  echo done
-                } 
-            }
-        }        
+        //        } 
+        //    }
+        //}        
     }   
     
     post {
