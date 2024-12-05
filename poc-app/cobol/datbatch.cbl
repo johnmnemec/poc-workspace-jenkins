@@ -11,9 +11,7 @@
        COPY DATDEPND.
       *
        PROCEDURE DIVISION.
-           DISPLAY 'DATBATCH.CBL: Jenkv1.'  
-           DISPLAY 'DATDEPND.CPY: WS-VER    =' WS-VER. 
-           DISPLAY 'DATEMBED.CPY: EMBED-VER =' EMBED-VER.
+           DISPLAY 'DATBATCH.CBL: John Demo Again'  
 
            STOP RUN.                                                  
                                                                       
