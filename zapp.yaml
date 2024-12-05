@@ -27,7 +27,7 @@ propertyGroups:
       - name: syslib
         type: local
         locations:      
-          - "poc-app/copybooks"          
+          - "**"          
           
 
   

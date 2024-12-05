@@ -27,7 +27,7 @@
                 "port": 10443,
                 "protocol": "https",
                 "rejectUnauthorized": false,
-                "host": "poc-waas"
+                "host": "163.109.87.254"
             },
             "secure": []
         },
@@ -35,8 +35,8 @@
             "type": "ssh",
             "properties": {
                 "port": 22,
-                "privateKey": "C:/Users/nelso/.ssh/id_rsa",
-                "host": "poc-waas"
+                "privateKey": "C:/Users/JohnNemec/.ssh/id_rsa",
+                "host": "163.109.87.254"
             },
             "secure": [
                 "user"
