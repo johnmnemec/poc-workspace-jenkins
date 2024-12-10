@@ -11,7 +11,7 @@
        COPY DATDEPND.
       *
        PROCEDURE DIVISION.
-           DISPLAY 'DATBATCH.CBL: John Demo on a feature branch again'  
+           DISPLAY 'DATBATCH.CBL: John Demo'  
 
            STOP RUN.                                                  
                                                                       
